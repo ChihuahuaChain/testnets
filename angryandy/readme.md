@@ -10,7 +10,7 @@ The Upgrade is scheduled for BLOCK `535000`, should be around _16:00 UTC on Janu
 
 Time is only an estimate and can vary by -/+3 hours, check on the #priv-validators channel on our Discord or check the [upgrade monitor](https://chain-monitor.cros-nest.com/d/Upgrades/upgrades?orgId=1&refresh=1m&var-chain_id=chihuahua-1&var-version=angryandy)
 
-#Using Cosmovisor
+# Using Cosmovisor
 
 ```bash
 # download the new version
