@@ -1,150 +1,59 @@
-# Chihuahua - angryandy Testnet
+# Angry Andy UPGRADE (v1.1.1)
 
-The purpose of this testnet is to simulate the future upgrade to v1.0.1
-
-To simulate the correct upgrade with the 5% min commission we ask a few validators to set up a commission below 5% make sure to coordinate with other participants on the dedicated Discord channel #testnet.
-
-We will wait for at least 5 gentx before launching the testnet and therefore update the draft_genesis.json with the last one and coordinate the launch.
-
-Before launching this README will be updated with a full list of instruction.
+![Angry Andy](https://github.com/ChihuahuaChain/testnets/blob/angryandy/angryandy.jpg?raw=true)
 
 
-## Setup
+Angry Andy upgrade [Proposal Number #3](https://www.mintscan.io/chihuahua/proposals/3)
 
-**Prerequisites:** Make sure to have [Golang >=1.17.5](https://golang.org/).
 
-#### Build from source
+The Upgrade is scheduled for BLOCK `535000`, should be around _16:00 UTC on January 18, 2022_.
 
-You need to ensure your gopath configuration is correct. If the following **'make'** step does not work then you might have to add these lines to your .profile or .zshrc in the users home folder:
+Time is only an estimate and can vary by -/+3 hours, check on the #priv-validators channel on our Discord or check the [upgrade monitor](https://chain-monitor.cros-nest.com/d/Upgrades/upgrades?orgId=1&refresh=1m&var-chain_id=chihuahua-1&var-version=angryandy)
 
-```sh
-nano ~/.profile
+#Using Cosmovisor
+
+```bash
+# download the new version
+
+cd ~/chihuahua
+git fetch --tags
+git checkout v1.1.1
+make install
+
+# check the version - should return v1.1.1
+chihuahuad version
+
+# create the upgrade directory if you haven't
+mkdir -p $DAEMON_HOME/cosmovisor/upgrades/angryandy/bin
+
+# if you are using cosmovisor you then need to copy this new binary
+cp /home/<YOUR_USER>/go/bin/chihuahuad $DAEMON_HOME/cosmovisor/upgrades/angryandy/bin
+
+# check the version you're about to run is v1.1.1
+$DAEMON_HOME/cosmovisor/upgrades/angryandy/bin/chihuahuad version
 ```
 
-```
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
-export GO111MODULE=on
-export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
-```
+# For the (lazy) screen lovers
 
-Source update .profile
+If you are a lazy screen lover and you are not using cosmovisor
 
-```sh
-source .profile
-```
+```bash
+# download the new version
+cd ~/chihuahua
+git fetch --tags
+git checkout v1.1.1
+make install
 
-```sh
-git clone https://github.com/ChihuahuaChain/chihuahua
-cd chihuahua
-git checkout main
-make build && make install
+# check the version - should be v1.1.1
+chihuahuad version
 ```
 
-This will build and install `chihuahuad` binary into `$GOBIN`.
+Wait for the upgrade block height 535000 and wait for your node to gracefully stop, take some time to backup your data directory then start the node again.
 
-Note: When building from source, it is important to have your `$GOPATH` set correctly. When in doubt, the following should do:
+# Thank you
 
-```sh
-mkdir ~/go
-export GOPATH=~/go
-```
+A special Thank You to Jacob Gadikian (faddat), Lydia Pierce and Evan Forbes for all the codebase cleaning, version bumps and the 5% commission enforcing code.
 
-## Setup validator node
+Thank you to all the validators who helped testing the upgrade before mainnet! Thank You! Woof!
 
-Below are the instructions to generate & submit your genesis transaction
-
-### Generate genesis transaction (gentx)
-
-1. Initialize Chihuahua directories and create the local genesis file with the correct chain-id:
-
-   ```bash
-   chihuahuad init <moniker-name> --chain-id=angryandy-1
-   ```
-
-2. Create a local key pair:
-
-   ```sh
-   > chihuahuad keys add <key-name>
-   ```
-
-3. Add your account to your local genesis file with a given amount and the key you just created. Use only `10000000000uhuatest`, other amounts will be ignored.
-
-   ```bash
-   chihuahuad add-genesis-account $(chihuahuad keys show <key-name> -a) 10000000000uhuatest
-   ```
-
-4. Create the gentx, use only `9000000000uhuatest`:
-
-   ```bash
-   chihuahuad gentx <key-name> 9000000000uhuatest --chain-id=angryandy-1
-   ```
-
-   If all goes well, you will see a message similar to the following:
-
-   ```bash
-   Genesis transaction written to "/home/user/.chihuahua/config/gentx/gentx-******.json"
-   ```
-
-### Submit genesis transaction
-
-- Fork [the testnets repo](https://github.com/ChihuahuaChain/testnets) into your Github account
-
-- Clone your repo using
-
-  ```bash
-  git clone https://github.com/<your-github-username>/testnets
-  ```
-
-- Copy the generated gentx json file to `<repo_path>/angryandy/gentx/`
-
-  ```sh
-  > cd testnets
-  > cp ~/.chihuahua/config/gentx/gentx*.json ./angryandy/gentx/
-  ```
-
-- Commit and push to your repo
-- Create a PR onto https://github.com/ChihuahuaChain/testnets
-- Only PRs from individuals / groups with a history successfully running nodes will be accepted. This is to ensure the network successfully starts on time.
-
-If you have not installed cosmovisor, create a systemd file for your Chihuahua service:
-
-```sh
-sudo nano /etc/systemd/system/chihuahuad.service
-```
-
-Copy and paste the following and update `<YOUR_USERNAME>` and `<CHAIN_ID>`:
-
-```sh
-Description=Chihuahuad Service
-After=network-online.target
-
-[Service]
-User=<YOUR_USERNAME>
-ExecStart=/home/<YOUR_USERNAME>/go/bin/chihuahuad start
-Restart=on-failure
-RestartSec=3
-LimitNOFILE=4096
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable and start the new service:
-
-```sh
-sudo systemctl enable chihuahuad
-sudo systemctl start chihuahuad
-```
-
-Check status:
-
-```sh
-chihuahuad status
-```
-
-Check logs:
-
-```sh
-journalctl -u chihuahuad -f
-```
+_The spirit of the wolf shall now be released, and by the way, no, Andy is not angry with any of you!_
