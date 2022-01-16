@@ -1,6 +1,6 @@
 # Angry Andy UPGRADE (v1.1.1)
 
-![Angry Andy](https://github.com/ChihuahuaChain/testnets/blob/angryandy/angryandy.jpg?raw=true)
+![Angry Andy](https://raw.githubusercontent.com/ChihuahuaChain/testnets/main/angryandy/angryandy.jpg)
 
 
 Angry Andy upgrade [Proposal Number #3](https://www.mintscan.io/chihuahua/proposals/3)
